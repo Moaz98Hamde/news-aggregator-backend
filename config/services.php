@@ -35,4 +35,19 @@ return [
         ],
     ],
 
+    'news-api-providers' => [
+        'newsapiDotOrg' => [
+            'headers' => [],
+            'endpoint' => ''
+        ],
+        'nytimes' => [
+            'headers' => [],
+            'endpoint' => ''
+        ],
+        'newsapi.ai' => [
+            'headers' => [],
+            'endpoint' => ''
+        ]
+    ]
+
 ];
