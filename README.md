@@ -25,8 +25,8 @@ Before you begin, ensure you have the following installed:
 Clone the repository to your local machine:
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone [<repository-url>](https://github.com/Moaz98Hamde/news-aggregator-backend.git)
+cd news-aggregator-backend
 ```
 
 ### 2. Install dependencies
