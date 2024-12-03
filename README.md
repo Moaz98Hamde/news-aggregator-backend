@@ -115,8 +115,8 @@ run the following:
 
 | **Endpoint**          | **Description**                          | **Controller**                | **Filters**                                                                 | **Example** |
 |------------------------|------------------------------------------|--------------------------------|------------------------------------------------------------------------------|-------------|
-| `/sources`            | Lists all available news sources.       | `ListSourcesController`       | None                                                                         | `GET /sources` |
-| `/categories`         | Lists paginated news categories.             | `ListCategoriesController`    | None                                                                         | `GET /categories` |
-| `/articles`           | Lists paginated updated articles with optional filters. | `ListArticlesController`      | - `title`: Filters by title (partial match). <br> - `category`: Filters by category ID. <br> - `author`: Filters by author name. <br> - `source`: Filters by source name. | `GET /articles?title=example&category=1&author=John Doe&source=APIName` |
+| `/sources`            | Lists all available news sources.       | `ListSourcesController`       | None                                                                         | `GET /api/sources` |
+| `/categories`         | Lists paginated news categories.             | `ListCategoriesController`    | None                                                                         | `GET /api/categories` |
+| `/articles`           | Lists paginated updated articles with optional filters. | `ListArticlesController`      | - `title`: Filters by title (partial match). <br> - `category`: Filters by category ID. <br> - `author`: Filters by author name. <br> - `source`: Filters by source name. | `GET /api/articles?title=example&category=1&author=John Doe&source=APIName` |
 
 
