@@ -2,12 +2,12 @@
 
 namespace App\Services\NewsApi;
 
-use App\Services\NewsApi\Responses\NewsDotOrgHeadlinesNormalizer;
-use App\Services\NewsApi\Responses\NewsDotOrgSourcesNormalizer;
-use Exception;
+use Carbon\Carbon;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class NewsApiService
 {
@@ -24,6 +24,12 @@ class NewsApiService
      * @var string
      */
     protected string $entity;
+
+
+    protected string $jsonResponse;
+
+
+    protected array $normalizedResponse;
 
     /**
      * Holds API query params.
@@ -72,11 +78,9 @@ class NewsApiService
 
     /**
      * Hit API endpoint through given Entity & query params
-     * @param  string  $entity
-     * @param  array  $queryParams
-     * @return array
+     * @return NewsApiService
      */
-    public function fetch(): array
+    public function fetch(): NewsApiService
     {
         return $this->hit(Http::newsApiClient($this->provider));
     }
@@ -85,32 +89,43 @@ class NewsApiService
      * Hit API endpoint with associated entity suffix.
      * @param  \Http\Client\PendingRequest  $httpClient
 
-     * @return array
+     * @return NewsApiService
      */
-    public function hit(PendingRequest $httpClient): array
+    public function hit(PendingRequest $httpClient): NewsApiService
     {
         try {
             // Hit our endpoint with given entity with query params
-            $jsonResponse = $httpClient->get($this->entity, $this->queryParams);
-            return $this->normalizeResponse($jsonResponse);
+            $this->jsonResponse = $httpClient->get($this->entity, $this->queryParams);
+            return $this;
         } catch (RequestException $exception) {
+            Log::alert($exception->getMessage());
             return ['errors' => $exception->getMessage()];
         }
     }
 
-    /**
-     * Normalize different providers responses
-     * @param  string  $jsonResponse
-     * @return array
-     */
-    public function normalizeResponse(string $jsonResponse)
+    public function normalizeWith(string $normalizer)
     {
-        return match ([$this->provider, $this->entity]) {
-            ['newsapiDotOrg', 'sources'] => NewsDotOrgSourcesNormalizer::make($jsonResponse),
-            ['newsapiDotOrg', 'top-headlines'] => NewsDotOrgHeadlinesNormalizer::make($jsonResponse),
-            default  => throw new Exception('Mismatch provider or entity')
-        };
+        $this->normalizedResponse = $normalizer::make($this->jsonResponse);
+        return $this;
     }
 
-    public function store() {}
+
+    public function store(string $model, array $extra = [], string $unique = null)
+    {
+        if ($this->normalizedResponse) {
+            foreach ($this->normalizedResponse as $item) {
+                $item['published_at'] = Carbon::parse($item['published_at']);
+                if($unique){
+                    $model::firstOrCreate(
+                        [$unique => $item[$unique]],
+                        array_merge($item, $extra)
+                    );
+                }else{
+                    $model::create(array_merge($item, $extra));
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }

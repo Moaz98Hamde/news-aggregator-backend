@@ -2,10 +2,13 @@
 
 namespace App\Services\NewsApi\Responses;
 
-class NewsDotOrgHeadlinesNormalizer extends ResponseNormalizer
+use Illuminate\Support\Facades\Log;
+
+class NewsDotOrgContentNormalizer extends ResponseNormalizer
 {
     protected $mappedApiKeys = [
         'author' => 'author',
+        'source' => 'source',
         'title' => 'title',
         'description' => 'description',
         'url' => 'url',
@@ -32,9 +35,12 @@ class NewsDotOrgHeadlinesNormalizer extends ResponseNormalizer
         if (isset($data['articles']) && is_array($data['articles'])) {
             foreach ($data['articles'] as $article) {
                 $articleData = array_intersect_key($article ?? [], $this->mappedApiKeys);
-                $articleData['source'] = $article['source']['name'];
+                $articleData['source'] = 'news.org';
                 $normalized[] = parent::mappedApiKeys($articleData);
             }
+        } else {
+            Log::info("Location: ",get_class($this));
+            Log::alert("API call error: ", $data, );
         }
 
         return $normalized;

@@ -4,16 +4,15 @@ namespace App\Services\NewsApi\Responses;
 
 use Illuminate\Support\Facades\Log;
 
-class NewsDotOrgSourcesNormalizer extends ResponseNormalizer
+class TheGuardianSectionsNormalizer extends ResponseNormalizer
 {
     protected $mappedApiKeys = [
-        'name' => 'name',
-        'category' => 'category',
-        'country' => 'country'
+        'webTitle' => 'name',
+        'source' => 'source'
     ];
 
     /**
-     * Normalize the response data from newsapi.org API.
+     * Normalize the response data from theguardian.com API.
      *
      * @param string $json
      * @return array
@@ -26,11 +25,11 @@ class NewsDotOrgSourcesNormalizer extends ResponseNormalizer
     public function normalizeStructure(array $data): array
     {
         $normalized = [];
-
-        if (isset($data['sources']) && is_array($data['sources'])) {
-            foreach ($data['sources'] as $source) {
-                $sourceData = array_intersect_key($source ?? [], $this->mappedApiKeys);
-                $normalized[] = parent::mappedApiKeys($sourceData);
+        if (isset($data['response']['results']) && is_array($data['response']['results'])) {
+            foreach ($data['response']['results'] as $section) {
+                $sectionData = array_intersect_key($section ?? [], $this->mappedApiKeys);
+                $sectionData['source'] = 'theguardian';
+                $normalized[] = parent::mappedApiKeys($sectionData);
             }
         } else {
             Log::info("Location: " . get_class($this));
