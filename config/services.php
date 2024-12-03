@@ -37,16 +37,20 @@ return [
 
     'news-api-providers' => [
         'newsapiDotOrg' => [
-            'headers' => [],
-            'endpoint' => ''
+            'headers' => [
+                'Authorization' => env('NEWS_API_KEY')
+            ],
+            'endpoint' => 'https://newsapi.org/v2/'
         ],
         'nytimes' => [
             'headers' => [],
-            'endpoint' => ''
+            'endpoint' => 'https://api.nytimes.com/svc/news/v3/',
+            'key' => env('NY_TIMES_API_KEY')
         ],
-        'newsapi.ai' => [
+        'theguardian' => [
             'headers' => [],
-            'endpoint' => ''
+            'endpoint' => 'https://content.guardianapis.com/',
+            'key' => env('THE_GUARDIAN_API_KEY')
         ]
     ]
 
