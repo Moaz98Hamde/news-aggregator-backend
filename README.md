@@ -31,11 +31,11 @@ git clone https://github.com/Moaz98Hamde/news-aggregator-backend.git
 cd news-aggregator-backend
 ```
 
-### 2. Install dependencies
-Run the following command to install the necessary PHP dependencies:
+### 2. Update dependencies
+Run the following command to update the necessary PHP dependencies:
 
 ```bash
-composer install
+composer update
 ```
 
 ### 3. Configure Environment Variables
